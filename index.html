@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Food App</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #dc143c, #000000); /* Crimson Red to Black */
+        }
+
+        /* Hover Effect Element */
+        #hover-effect {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(square, rgb(170, 220, 18) 0%, rgba(211, 6, 6, 0.811) 0%);
+            pointer-events: none;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Glowing Trail Effect */
+        .trail {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(0, 60, 255, 0.955); /* Blue glow */
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 42, 0, 0.8);
+            pointer-events: none;
+            animation: fadeOut 0.2s linear forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        /* Container Styling */
+        .container {
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        /* Pop Effect on Hover */
+        .container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input, select, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        /* Pop Effect on Hover for Inputs, Buttons, and Selects */
+        input:hover, select:hover, button:hover {
+            transform: scale(1.05);
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #cart-list li:hover {
+            background-color: #f1f1f1;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Hover Effect Layer -->
+    <div id="hover-effect"></div>
+
+    <div id="welcome-container" class="container">
+        <h2>Welcome to Our Food Order App</h2>
+        <button onclick="showLoginPage()">Next</button>
+    </div>
+
+    <div id="login-container" class="container hidden">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username"><br>
+        <input type="password" id="password" placeholder="Password"><br>
+        <button onclick="login()">Login</button>
+    </div>
+    
+    <div id="view-container" class="container hidden">
+        <h2>Welcome, <span id="display-username"></span>!</h2>
+        <h3>Menu</h3>
+        <select id="food-menu"></select><br>
+        <button onclick="addToCart()">Add to Cart</button>
+
+        <h3>Cart</h3>
+        <ul id="cart-list"></ul>
+        <h3>Total: Rs.<span id="total-price">0</span></h3>
+        <button onclick="checkout()">Checkout</button>
+    </div>
+
+    <div id="confirmation-container" class="container hidden">
+        <h2>Your order has been placed</h2>
+        <p>Enjoy your food!</p>
+        <button onclick="location.href='index.html'">Go Back to Menu</button>
+    </div>
+
+    <script>
+        const hoverEffect = document.getElementById('hover-effect');
+
+        // Move the hover effect with the mouse
+        document.addEventListener('mousemove', (e) => {
+            hoverEffect.style.left = `${e.pageX}px`;
+            hoverEffect.style.top = `${e.pageY}px`;
+            createTrail(e.pageX, e.pageY);
+        });
+
+        // Glowing Trail Effect
+        function createTrail(x, y) {
+            const trail = document.createElement("div");
+            trail.classList.add("trail");
+            trail.style.left = `${x}px`;
+            trail.style.top = `${y}px`;
+
+            document.body.appendChild(trail);
+
+            setTimeout(() => trail.remove(), 500);
+        }
+
+        const mockMenu = [
+            { name: "Dosa", price: 30 },
+            { name: "Idli", price: 20 },
+            { name: "Chapati", price: 25 },
+            { name: "Poori", price: 40 },
+            { name: "Pongal", price: 35 },
+            { name: "Upma", price: 10 },
+            { name: "Uthapam", price: 60 },
+            { name: "Fried Rice", price: 80 },
+            { name: "South Indian Meals", price: 95 }
+        ];
+
+        let cart = [];
+        let total = 0;
+
+        function showLoginPage() {
+            document.getElementById('welcome-container').classList.add('hidden');
+            document.getElementById('login-container').classList.remove('hidden');
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username && password) {
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('view-container').classList.remove('hidden');
+                document.getElementById('display-username').innerText = username;
+                loadMenu();
+            } else {
+                alert('Please enter both username and password.');
+            }
+        }
+
+        function loadMenu() {
+            const menuSelect = document.getElementById('food-menu');
+            menuSelect.innerHTML = "";
+            mockMenu.forEach(item => {
+                let option = document.createElement("option");
+                option.value = item.price;
+                option.textContent = `${item.name} - Rs.${item.price}`;
+                menuSelect.appendChild(option);
+            });
+        }
+
+        function addToCart() {
+            const menuSelect = document.getElementById('food-menu');
+            const selectedOption = menuSelect.options[menuSelect.selectedIndex];
+            const itemName = selectedOption.text.split(" - ")[0];
+            const itemPrice = parseFloat(selectedOption.value);
+
+            cart.push({ name: itemName, price: itemPrice });
+            total += itemPrice;
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartList = document.getElementById('cart-list');
+            cartList.innerHTML = "";
+            cart.forEach((item, index) => {
+                let li = document.createElement("li");
+                li.textContent = `${item.name} - Rs.${item.price}`;
+                cartList.appendChild(li);
+            });
+
+            document.getElementById('total-price').innerText = total;
+        }
+
+        async function checkout() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            const orderData = {
+                username: document.getElementById('display-username').innerText,
+                cart: cart,
+                total: total
+            };
+            console.log(orderData);
+            try {
+                const response = await fetch("http://localhost:5000/save-order", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const result = await response.json();
+                alert(result.message);
+
+                // Clear cart and show confirmation
+                cart = [];
+                total = 0;
+                updateCart();
+                document.getElementById('view-container').classList.add('hidden');
+                document.getElementById('confirmation-container').classList.remove('hidden');
+            } catch (error) {
+                console.error("❌ Error saving order:", error);
+                alert("❌ Failed to save order. Please try again.");
+            }
+        }
+    </script>
+</body>
+</html>
