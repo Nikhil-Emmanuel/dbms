@@ -44,21 +44,23 @@ app.get('/', (req, res) => {
 });
 
 // API to save orders
-app.post('/save-order', (req, res) => {
+app.post('/save-order', async (req, res) => {
     const { username, cart, total } = req.body;
 
     if (!username || !cart || !total) {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const newOrder = new Order({
-        username,
-        cart,
-        total
-    });
-try {
+    try {
+        // Create a new order instance
+        const newOrder = new Order({
+            username: username,
+            cart: cart,
+            total: total
+        });
+
         // Save the order to MongoDB
-        await newOrder.save();
+        await newOrder.save();  // This now works since the function is async
         res.json({ message: "Order saved successfully!" });
     } catch (error) {
         console.error("Error saving order:", error);
