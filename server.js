@@ -9,7 +9,7 @@ const MONGO_URI = process.env.MONGO_URI;  // Get MongoDB URI from .env
 
 // Middleware
 app.use(cors({
-    origin: "http://54.91.93.132",  // Allow requests from this IP
+    origin: "",  // Allow requests from this IP
     // Allow only specific headers
 }));
 
