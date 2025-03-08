@@ -37,8 +37,8 @@ const OrderSchema = new mongoose.Schema({
 });
 
 const Order = mongoose.model("Order", OrderSchema);
-app.get("/", (req, res) => {
-    res.send("Server is up and running!");
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // API to save orders
