@@ -236,13 +236,14 @@
             };
             console.log(orderData);
             try {
-                const response = await fetch("http://localhost:5000/save-order", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(orderData)
-                });
+               const response = await fetch("http://54.91.93.132:5000/save-order", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(orderData)
+});
+
 
                 const result = await response.json();
                 alert(result.message);
