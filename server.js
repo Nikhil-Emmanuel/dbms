@@ -56,11 +56,14 @@ app.post('/save-order', (req, res) => {
         cart,
         total
     });
-
-    newOrder.save()
-        .then(() => res.json({ message: "Order saved successfully!" }))
-        .catch(err => res.status(500).json({ error: "Failed to save order", details: err }));
+try {
+        // Save the order to MongoDB
+        await newOrder.save();
+        res.json({ message: "Order saved successfully!" });
+    } catch (error) {
+        console.error("Error saving order:", error);
+        res.status(500).json({ error: "Failed to save order" });
+    }
 });
-
 // Start the server
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
