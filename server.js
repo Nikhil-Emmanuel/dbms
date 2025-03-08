@@ -9,7 +9,11 @@ const MONGO_URI = process.env.MONGO_URI;  // Get MongoDB URI from .env
 
 // Middleware
 app.use(cors({
-    origin: "http://localhost:9000"  // Allow requests from the front-end port
+    origin: "http://54.91.93.132",  // Allow requests from this IP
+    methods: ["GET", "POST"],      // Allow only GET and POST methods (you can add others if needed)
+    allowedHeaders: ["Content-Type", "Authorization"]  // Allow only specific headers
+}));
+ Allow requests from the front-end port
 }));
 app.use(express.json());
 
