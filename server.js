@@ -1,27 +1,27 @@
 require("dotenv").config();  // Load environment variables
+const path = require('path');  // Import the path module
 console.log("MONGO_URI:", process.env.MONGO_URI);
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 80;
 const MONGO_URI = process.env.MONGO_URI;  // Get MongoDB URI from .env
-app.use(express.json())
-// Middleware
+
+app.use(express.json());
+
+// CORS Middleware
 app.use(cors({
-    origin: "",  // Allow requests from this IP
-    // Allow only specific headers
+    origin: "*"  // Allow requests from any origin (for now, you can change this for security later)
 }));
 
-//app.use(express.static('public'));
+// Serve static files from 'public' folder
+app.use(express.static('public'));
 
 // Connect to MongoDB Atlas
-mongoose.connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log("✅ Connected to MongoDB Atlas!"))
-.catch(err => console.error("❌ MongoDB Connection Error:", err));
+mongoose.connect(MONGO_URI)
+    .then(() => console.log("✅ Connected to MongoDB Atlas!"))
+    .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
 // Define Schema
 const OrderSchema = new mongoose.Schema({
@@ -37,12 +37,12 @@ const OrderSchema = new mongoose.Schema({
 });
 
 const Order = mongoose.model("Order", OrderSchema);
+
+// Serve index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-const PORT = 80;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://<public-ip>:${PORT}`);
+
 // API to save orders
 app.post('/save-order', (req, res) => {
     const { username, cart, total } = req.body;
@@ -51,8 +51,16 @@ app.post('/save-order', (req, res) => {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Process the order here (e.g., save to the database)
-    res.json({ message: "Order saved successfully!" });
+    const newOrder = new Order({
+        username,
+        cart,
+        total
+    });
+
+    newOrder.save()
+        .then(() => res.json({ message: "Order saved successfully!" }))
+        .catch(err => res.status(500).json({ error: "Failed to save order", details: err }));
 });
 
+// Start the server
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
