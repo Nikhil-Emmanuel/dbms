@@ -6,7 +6,7 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;  // Get MongoDB URI from .env
-
+app.use(express.json())
 // Middleware
 app.use(cors({
     origin: "",  // Allow requests from this IP
@@ -40,20 +40,19 @@ const Order = mongoose.model("Order", OrderSchema);
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
+const PORT = 80;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://<public-ip>:${PORT}`);
 // API to save orders
-app.get("/save-order", async (req, res) => {
-    try {
-        console.log(req.body);  // Log the data to verify the request
-        const { username, cart, total } = req.body;
-        const newOrder = new Order({ username, cart, total });
-        await newOrder.save();
-        res.json({ message: "✅ Order saved successfully!" });
-    } catch (error) {
-        console.error("❌ Error saving order:", error);  // Log the error
-        res.status(500).json({ error: error.message });
-    }
-});
+app.post('/save-order', (req, res) => {
+    const { username, cart, total } = req.body;
 
+    if (!username || !cart || !total) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Process the order here (e.g., save to the database)
+    res.json({ message: "Order saved successfully!" });
+});
 
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
