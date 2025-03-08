@@ -13,7 +13,7 @@ app.use(cors({
     // Allow only specific headers
 }));
 
-app.use(express.json());
+app.use(express.static('public'));
 
 // Connect to MongoDB Atlas
 mongoose.connect(MONGO_URI, {
