@@ -33,7 +33,9 @@ const OrderSchema = new mongoose.Schema({
         }
     ],
     total: { type: Number, required: true },
-    timestamp: { type: Date, default: Date.now }
+     timestamp: { 
+        type: Date, 
+        default: () => new Date(Date.now() + (5.5 * 60 * 60 * 1000))
 });
 
 const Order = mongoose.model("Order", OrderSchema);
