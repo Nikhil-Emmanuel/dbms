@@ -8,28 +8,30 @@ MongoDB Integration: Orders are stored in a MongoDB database 🗄️.
 Deployment on AWS EC2: The whole project is cloned and deployed on an AWS EC2 instance ☁️ for live access.
 🛠️ Technologies Used
 Frontend:
+
 HTML
 CSS
 JavaScript
-
 Backend:
+
 Node.js
 Express.js (for routing)
 Database:
 
 MongoDB (to store food orders)
-
 Hosting:
-AWS EC2 Instance
 
+AWS EC2 Instance ☁️
 📦 Setup Instructions
 Prerequisites
 Before you begin, ensure you have the following installed:
-  Node.js 🖥️
-  MongoDB 🗄️ (or use a cloud database like MongoDB Atlas)
-  AWS Account ☁️ to host your EC2 instance.
+
+Node.js 🖥️
+MongoDB 🗄️ (or use a cloud database like MongoDB Atlas)
+AWS Account ☁️ to host your EC2 instance.
 Steps to Run the Project Locally
 Clone the Repository:
+
 bash
 Copy
 git clone https://github.com/Nikhil-Emmanuel/dbms.git
@@ -39,17 +41,17 @@ Install Dependencies: Navigate to the project directory and install the required
 bash
 Copy
 npm install
-
 Configure MongoDB:
+
 Create a MongoDB database either locally or through a service like MongoDB Atlas.
 Add your MongoDB connection URI to the server.js file under the connection string.
-
 Example:
+
 js
 Copy
 mongoose.connect('mongodb://yourMongoDBURI', { useNewUrlParser: true, useUnifiedTopology: true });
-
 Start the Server: Run the following command to start the server:
+
 bash
 Copy
 node server.js
@@ -87,21 +89,22 @@ Copy
 ├── script.js           # JavaScript for handling frontend logic
 ├── server.js           # Node.js backend server
 ├── package.json        # NPM dependencies and project details
-├── .idx
-      └── dev.nix       #NIX file to build the environment and configure packages
+├── .idx                # Project IDX configuration file
+├── dev.nix             # NIX file to build the environment and configure packages
 └── README.md           # Project documentation
-
 MongoDB Data
-The orders are stored in MongoDB in a collection called orders -> test. 
+The orders are stored in MongoDB in a collection called orders -> test.
 
 Each order consists of the following fields:
+
 customerName: The name of the customer placing the order.
 foodItems: An array of ordered food items.
 totalPrice: The total price of the order.
 timeStamp: The date and time when the order was placed.
-
 Contributions
 Feel free to fork this project and submit pull requests. If you encounter any issues, please open an issue on the GitHub repository.
 
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+Thanks for checking out my project! 🍔🍕
