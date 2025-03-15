@@ -42,3 +42,21 @@ Before you begin, ensure you have the following installed:
    ```bash
    git clone https://github.com/Nikhil-Emmanuel/dbms.git
    cd dbms
+
+2. **Install Dependencies: Navigate to the project directory and install the required dependencies:**
+```bash
+npm install
+```
+Configure MongoDB:
+
+Create a MongoDB database either locally or through a service like MongoDB Atlas.
+Add your MongoDB connection URI to the server.js file under the connection string.
+Example:
+```js
+mongoose.connect('mongodb://yourMongoDBURI', { useNewUrlParser: true, useUnifiedTopology: true });
+```
+Start the Server: Run the following command to start the server:
+```bash
+node server.js
+```
+Open the Application: Navigate to http://localhost:5000 in your browser 🌐 to view the food order webpage.
